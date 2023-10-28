@@ -3,32 +3,7 @@
 1. Собираю докер образ:
 ```docker build -t test/docker-study .```
 
-2. Создаю сеть и присоединяю к ней контейнеры
-```
-docker network create master-slaves
-
-docker network connect master-slaves master
-docker network connect master-slaves slave1
-docker network connect master-slaves slave2
-```
-
-3. Смотрю адреса контейнеров slave2 и slave1. Заменяю request адреса на адреса контейнеров для master.
-```
-docker network inspect master-slaves
-```
-
-slave1: 172.18.0.3
-slave2: 172.18.0.4
-
-По итогу:
-```
-t1 = threading.Thread(target=request_sender, args=[urls[:middle], 'http://172.18.0.3:8081/count', words])
-t2 = threading.Thread(target=request_sender, args=[urls[middle:], 'http://172.18.0.4:8082/count', words])
-```
-
-Меняю адреса при работе с контейнером master.
-
-4. Создаю и запускаю контейнеры
+2. Создаю и запускаю контейнеры
 ```
 docker run --name master -p 8080:8080 -it test/docker-study /bin/bash
 python3 wordparser.py --host 0.0.0.0 --port 8080
@@ -41,6 +16,31 @@ python3 wordparser.py --host 0.0.0.0 --port 8081
 docker run --name slave2 -p 8082:8082 -it test/docker-study /bin/bash
 python3 wordparser.py --host 0.0.0.0 --port 8082
 ```
+
+3. Создаю сеть и присоединяю к ней контейнеры
+```
+docker network create master-slaves
+
+docker network connect master-slaves master
+docker network connect master-slaves slave1
+docker network connect master-slaves slave2
+```
+
+4. Смотрю адреса контейнеров slave2 и slave1. Заменяю request адреса на адреса контейнеров для master.
+```
+docker network inspect master-slaves
+```
+
+slave1: 172.18.0.3
+slave2: 172.18.0.4
+
+По итогу в коде в master меняю адреса на следующие:
+```
+t1 = threading.Thread(target=request_sender, args=[urls[:middle], 'http://172.18.0.3:8081/count', words])
+t2 = threading.Thread(target=request_sender, args=[urls[middle:], 'http://172.18.0.4:8082/count', words])
+```
+
+Адеса поменял, запуская программу в master: python3 wordparser.py --host 0.0.0.0 --port 8080
 
 5. Делаю запрос
 ```
