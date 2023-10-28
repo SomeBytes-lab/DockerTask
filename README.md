@@ -27,7 +27,7 @@ docker network connect master-slaves slave1
 docker network connect master-slaves slave2
 ```
 
-4. Смотрю адреса контейнеров slave2 и slave1. Заменяю request адреса на адреса контейнеров для master.
+4. Смотрю адреса контейнеров slave1 и slave2. Заменяю request адреса на адреса контейнеров для master.
 ```
 docker network inspect master-slaves
 ```
@@ -41,12 +41,18 @@ t1 = threading.Thread(target=request_sender, args=[urls[:middle], 'http://172.18
 t2 = threading.Thread(target=request_sender, args=[urls[middle:], 'http://172.18.0.4:8082/count', words])
 ```
 
-Адеса поменял, запуская программу в master:
+Адреса поменял, запуская программу в master:
 ```
 python3 wordparser.py --host 0.0.0.0 --port 8080
 ```
 
 5. Делаю запрос
+
+Делал через утилиту <a href="https://github.com/micha/resty">resty</a>
+
+```
+resty localhost:8080 -H "Content-Type: application/json"
+```
 ```
 GET /words '{"urls": ["https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D1%8E%D0%B7_%D0%A1%D0%BE%D0%B2%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D1%85_%D0%A1%D0%BE%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA", "https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D1%8E%D0%B7_%D0%A1%D0%BE%D0%B2%D0%B5%D1%82%D1%81%D0%BA%D0%B8%D1%85_%D0%A1%D0%BE%D1%86%D0%B8%D0%B0%D0%BB%D0%B8%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA"]}'
 ```
