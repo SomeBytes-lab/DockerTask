@@ -1,12 +1,13 @@
 # DockerTask
 
 1. Собираю докер образ:
-```docker build -t test/docker-study .```
+```
+docker build -t test/docker-study .
+```
 
-2. Создаю и запускаю контейнеры
+3. Создаю и запускаю контейнеры
 ```
 docker run --name master -p 8080:8080 -it test/docker-study /bin/bash
-python3 wordparser.py --host 0.0.0.0 --port 8080
 ```
 ```
 docker run --name slave1 -p 8081:8081 -it test/docker-study /bin/bash
@@ -40,7 +41,10 @@ t1 = threading.Thread(target=request_sender, args=[urls[:middle], 'http://172.18
 t2 = threading.Thread(target=request_sender, args=[urls[middle:], 'http://172.18.0.4:8082/count', words])
 ```
 
-Адеса поменял, запуская программу в master: python3 wordparser.py --host 0.0.0.0 --port 8080
+Адеса поменял, запуская программу в master:
+```
+python3 wordparser.py --host 0.0.0.0 --port 8080
+```
 
 5. Делаю запрос
 ```
